@@ -105,6 +105,19 @@
     padding: 12px 15px; font-size: 0.8rem; color: var(--silver); margin-bottom: 20px; line-height: 1.5;
   }
 
+  .sub-box {
+    border: 1.5px solid var(--blue-light); border-radius: 12px;
+    padding: 20px 18px 6px; margin: 22px 0 20px; background: #2f5fd614;
+  }
+  .sub-box .sub-box-title {
+    font-size: 0.85rem; font-weight: 700; color: var(--blue-light);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sub-box .sub-box-sub {
+    font-size: 0.76rem; color: var(--silver-dim); margin-bottom: 16px;
+  }
+
   .review-section { margin-bottom: 18px; }
   .review-section h3 {
     font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;
@@ -224,24 +237,28 @@
           <span class="toggle-pw" onclick="togglePw('scPass', this)">Show</span>
         </div>
       </div>
-      <div class="field">
-        <label>Experian Username</label>
-        <input type="text" id="expUser" placeholder="Your Experian username">
-      </div>
-      <div class="field">
-        <label>Experian Password</label>
-        <div class="pw-wrap">
-          <input type="password" id="expPass" placeholder="Your Experian password">
-          <span class="toggle-pw" onclick="togglePw('expPass', this)">Show</span>
+      <div class="sub-box">
+        <div class="sub-box-title">🔐 Experian Login</div>
+        <div class="sub-box-sub">Separate from your SmartCredit / MyFreeScoreNow login above.</div>
+        <div class="field">
+          <label>Experian Username</label>
+          <input type="text" id="expUser" placeholder="Your Experian username">
         </div>
-      </div>
-      <div class="field">
-        <label>Security Answer</label>
-        <input type="text" id="secAnswer" placeholder="Your security question answer">
-      </div>
-      <div class="field">
-        <label>Pin (4 digits)</label>
-        <input type="text" id="pin" placeholder="1234" maxlength="4" inputmode="numeric">
+        <div class="field">
+          <label>Experian Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="expPass" placeholder="Your Experian password">
+            <span class="toggle-pw" onclick="togglePw('expPass', this)">Show</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Security Answer</label>
+          <input type="text" id="secAnswer" placeholder="Your security question answer">
+        </div>
+        <div class="field">
+          <label>Pin (4 digits)</label>
+          <input type="text" id="pin" placeholder="1234" maxlength="4" inputmode="numeric">
+        </div>
       </div>
       <div class="status-msg msg-error" id="status-msg-3"></div>
       <div class="btn-row">
