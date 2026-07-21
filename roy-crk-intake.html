@@ -302,6 +302,16 @@
         <input type="file" id="ssnIdUpload" accept="image/*,.pdf" onchange="handleFile(this, 'ssnid')">
       </div>
 
+      <div class="field">
+        <label>Credit Summary Document</label>
+        <div class="upload-box" id="box-creditSummary" onclick="document.getElementById('creditSummaryUpload').click()">
+          <div class="up-icon">📄</div>
+          <div class="up-label">Click to upload</div>
+          <div class="up-filename" id="fname-creditSummary"></div>
+        </div>
+        <input type="file" id="creditSummaryUpload" accept="image/*,.pdf" onchange="handleFile(this, 'creditSummary')">
+      </div>
+
       <div class="status-msg msg-error" id="status-msg-4"></div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
@@ -350,6 +360,7 @@
           <div class="review-item"><label>Driver's License</label><p id="r-dl">—</p></div>
           <div class="review-item"><label>Proof of Address</label><p id="r-poa">—</p></div>
           <div class="review-item"><label>SSN ID</label><p id="r-ssnid">—</p></div>
+          <div class="review-item"><label>Credit Summary Document</label><p id="r-creditSummary">—</p></div>
         </div>
       </div>
 
@@ -382,7 +393,7 @@
 
   let currentStep = 1;
   const totalSteps = 5;
-  const files = { dl: null, poa: null, ssnid: null };
+  const files = { dl: null, poa: null, ssnid: null, creditSummary: null };
 
   function goToStep(step) {
     if (step > currentStep && !validateStep(currentStep)) return;
@@ -417,7 +428,7 @@
       if (!/^\d{4}$/.test(val('pin'))) { msg.textContent = 'Pin must be exactly 4 digits.'; return false; }
     }
     if (step === 4) {
-      if (!files.dl || !files.poa || !files.ssnid) { msg.textContent = 'Please upload all three documents.'; return false; }
+      if (!files.dl || !files.poa || !files.ssnid || !files.creditSummary) { msg.textContent = 'Please upload all four documents.'; return false; }
     }
     return true;
   }
@@ -458,6 +469,7 @@
     document.getElementById('r-dl').textContent = files.dl ? files.dl.name : '—';
     document.getElementById('r-poa').textContent = files.poa ? files.poa.name : '—';
     document.getElementById('r-ssnid').textContent = files.ssnid ? files.ssnid.name : '—';
+    document.getElementById('r-creditSummary').textContent = files.creditSummary ? files.creditSummary.name : '—';
   }
 
   function submitForm() {
@@ -482,7 +494,8 @@
       pin: val('pin'),
       dl: files.dl,
       poa: files.poa,
-      ssnid: files.ssnid
+      ssnid: files.ssnid,
+      creditSummary: files.creditSummary
     };
 
     fetch(SCRIPT_URL, {
